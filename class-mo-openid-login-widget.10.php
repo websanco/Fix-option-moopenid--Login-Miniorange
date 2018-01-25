@@ -1087,7 +1087,21 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 							
 							if(is_wp_error( $user_id )) {
 								//print_r($user_id);
-								wp_die('There was an error in registration. Please contact your administrator.');
+								//wp_die('There was an error in registration. Please contact your administrator.');
+										$username = $username.get_option('mo_openid_user_count');
+							$user_email = $username.get_option('mo_openid_user_count').$user_email;
+						$userdata = array(
+											'user_login'  =>  $username,
+											'user_email'    =>  $user_email,
+											'user_pass'   =>  $random_password,
+											'display_name' => $user_full_name,
+											'first_name' => $first_name,
+											'last_name' => $last_name,
+											'user_url' => $user_url,
+										);
+						
+						  
+						$user_id 	= wp_insert_user( $userdata); 
 							}
 						
 							update_option('mo_openid_user_count',get_option('mo_openid_user_count')+1);
@@ -1186,14 +1200,15 @@ class mo_openid_sharing_ver_wid extends WP_Widget {
 					if(get_option('mo_openid_auto_register_enable')) {
 						$random_password 	= wp_generate_password( 10, false );
 						
-						if( isset($username_user_id) ){
+							if( isset($username_user_id) ){
 							$email = array();
 							$email = explode('@', $user_email);
 							$username = $email[0];
 							$username_user_id = $wpdb->get_var($wpdb->prepare("SELECT ID FROM $wpdb->users where user_login = %s", $username));
 							if( isset($username_user_id) ){
-								echo '<br/>This username already exists. Please ask the administrator to create your account with a unique username';
-								exit();
+							$username = $username.get_option('mo_openid_user_count');
+								//echo '<br/>This username already exists. Please ask the administrator to create your account with a unique username';
+								//exit();
 							}
 						}
 						
